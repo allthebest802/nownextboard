@@ -394,10 +394,10 @@
     .toast { transition: opacity 0.25s ease; }
   }
 
-  /* Narrow screens: stack panels vertically if THEN is on */
+  /* Narrow screens: always stack panels vertically */
   @media (max-width: 560px) {
-    body.three-panels main { flex-direction: column; }
-    body.three-panels .slot { min-height: 130px; }
+    main { flex-direction: column; }
+    .slot { min-height: 130px; }
   }
 </style>
 </head>
