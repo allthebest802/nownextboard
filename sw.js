@@ -4,7 +4,7 @@
    is nothing dynamic to go stale — bump CACHE_VERSION when you ship
    a new version and the old cache is cleaned up on activate. */
 
-const CACHE_VERSION = "nnb-v2";
+const CACHE_VERSION = "nnb-v3";
 const APP_SHELL = [
   "./",
   "./index.html",

@@ -425,8 +425,7 @@
     <h2 id="pickerTitle">Choose a card</h2>
     <button class="icon-btn" data-close="picker" aria-label="Close">✕</button>
   </div>
-  <div class="section-title">Activities</div>
-  <div id="builtinGrid" class="card-grid"></div>
+  <div id="builtinGroups"></div>
   <div class="section-title">My photo cards</div>
   <div id="customGrid" class="card-grid"></div>
   <button id="addPhotoBtn" class="wide-btn secondary">📷 Add a photo card</button>
@@ -468,43 +467,109 @@
 "use strict";
 
 /* ============================================================
-   Built-in card library (emoji for v1 — swap for Helpset SVGs
-   later by adding an `svg` field and rendering it in makeCardEl)
+   Built-in card library — grouped for the picker. Emoji for now;
+   swap for Helpset SVGs later by adding an `svg` field per card.
+   NOTE: existing ids are preserved so saved boards keep working.
 ============================================================ */
-const BUILTIN_CARDS = [
-  ["breakfast", "🥣", "Breakfast"],
-  ["lunch", "🥪", "Lunch"],
-  ["dinner", "🍽️", "Dinner"],
-  ["snack", "🍎", "Snack"],
-  ["drink", "🥤", "Drink"],
-  ["teeth", "🪥", "Brush teeth"],
-  ["toilet", "🚽", "Toilet"],
-  ["bath", "🛁", "Bath"],
-  ["wash", "🧼", "Wash hands"],
-  ["dressed", "👕", "Get dressed"],
-  ["shoes", "👟", "Shoes on"],
-  ["coat", "🧥", "Coat on"],
-  ["car", "🚗", "Car"],
-  ["bus", "🚌", "Bus"],
-  ["walk", "🚶", "Walk"],
-  ["school", "🏫", "School"],
-  ["home", "🏠", "Home"],
-  ["park", "🛝", "Park"],
-  ["shop", "🛒", "Shopping"],
-  ["doctor", "🩺", "Doctor"],
-  ["haircut", "💇", "Haircut"],
-  ["play", "🧸", "Play"],
-  ["tv", "📺", "TV"],
-  ["tablet", "📱", "Tablet"],
-  ["reading", "📖", "Story"],
-  ["drawing", "🖍️", "Drawing"],
-  ["music", "🎵", "Music"],
-  ["quiet", "🤫", "Quiet time"],
-  ["swim", "🏊", "Swimming"],
-  ["friends", "🧑‍🤝‍🧑", "Friends"],
-  ["grandma", "👵", "Grandma"],
-  ["bed", "🛏️", "Bed"]
-].map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }));
+const CARD_GROUPS = [
+  ["Daily routine", [
+    ["wake", "☀️", "Wake up"],
+    ["breakfast", "🥣", "Breakfast"],
+    ["teeth", "🪥", "Brush teeth"],
+    ["dressed", "👕", "Get dressed"],
+    ["shoes", "👟", "Shoes on"],
+    ["coat", "🧥", "Coat on"],
+    ["bag", "🎒", "Pack bag"],
+    ["medicine", "💊", "Medicine"],
+    ["toilet", "🚽", "Toilet"],
+    ["wash", "🧼", "Wash hands"],
+    ["bath", "🛁", "Bath"],
+    ["shower", "🚿", "Shower"],
+    ["pyjamas", "🌙", "Pyjamas on"],
+    ["reading", "📖", "Story"],
+    ["bed", "🛏️", "Bed"],
+    ["sleep", "😴", "Sleep"]
+  ]],
+  ["Food & drink", [
+    ["snack", "🍎", "Snack"],
+    ["lunch", "🥪", "Lunch"],
+    ["dinner", "🍽️", "Dinner"],
+    ["drink", "🥤", "Drink"],
+    ["milk", "🥛", "Milk"],
+    ["fruit", "🍌", "Fruit"],
+    ["icecream", "🍦", "Ice cream"],
+    ["baking", "🧁", "Baking"]
+  ]],
+  ["Going out", [
+    ["car", "🚗", "Car"],
+    ["bus", "🚌", "Bus"],
+    ["train", "🚆", "Train"],
+    ["bike", "🚲", "Bike"],
+    ["scooter", "🛴", "Scooter"],
+    ["walk", "🚶", "Walk"],
+    ["school", "🏫", "School"],
+    ["home", "🏠", "Home"],
+    ["park", "🛝", "Park"],
+    ["shop", "🛒", "Shopping"],
+    ["library", "📚", "Library"],
+    ["swim", "🏊", "Swimming"],
+    ["beach", "🏖️", "Beach"],
+    ["holiday", "🧳", "Holiday"],
+    ["doctor", "🩺", "Doctor"],
+    ["dentist", "🦷", "Dentist"],
+    ["haircut", "💇", "Haircut"]
+  ]],
+  ["People & pets", [
+    ["mum", "👩", "Mum"],
+    ["dad", "👨", "Dad"],
+    ["grandma", "👵", "Grandma"],
+    ["grandpa", "👴", "Grandpa"],
+    ["baby", "👶", "Baby"],
+    ["friends", "🧑‍🤝‍🧑", "Friends"],
+    ["teacher", "🧑‍🏫", "Teacher"],
+    ["dog", "🐶", "Dog"],
+    ["cat", "🐱", "Cat"]
+  ]],
+  ["Play & activities", [
+    ["play", "🧸", "Play"],
+    ["tv", "📺", "TV"],
+    ["tablet", "📱", "Tablet"],
+    ["games", "🎮", "Video games"],
+    ["drawing", "🖍️", "Drawing"],
+    ["painting", "🎨", "Painting"],
+    ["music", "🎵", "Music"],
+    ["singing", "🎤", "Singing"],
+    ["dancing", "💃", "Dancing"],
+    ["building", "🧱", "Building"],
+    ["puzzle", "🧩", "Puzzle"],
+    ["football", "⚽", "Football"],
+    ["garden", "🌻", "Garden"],
+    ["craft", "✂️", "Craft"],
+    ["bubbles", "🫧", "Bubbles"],
+    ["party", "🎉", "Party"],
+    ["birthday", "🎂", "Birthday"],
+    ["present", "🎁", "Present"]
+  ]],
+  ["School & home", [
+    ["homework", "✏️", "Homework"],
+    ["tidy", "🧹", "Tidy up"],
+    ["help", "🤝", "Helping"]
+  ]],
+  ["Calm & waiting", [
+    ["quiet", "🤫", "Quiet time"],
+    ["cuddle", "🤗", "Cuddle"],
+    ["headphones", "🎧", "Headphones"],
+    ["breathe", "😮‍💨", "Deep breaths"],
+    ["breaktime", "⏸️", "Break"],
+    ["wait", "⏳", "Waiting"],
+    ["finished", "✅", "Finished"]
+  ]]
+].map(([title, cards]) => ({
+  title,
+  cards: cards.map(([id, emoji, label]) => ({ id: "b:" + id, emoji, label }))
+}));
+
+const BUILTIN_CARDS = CARD_GROUPS.flatMap((g) => g.cards);
 
 /* ============================================================
    State — persisted to localStorage on every change so the app
@@ -727,7 +792,7 @@ function markDone() {
    Card picker
 ============================================================ */
 const picker = document.getElementById("picker");
-const builtinGrid = document.getElementById("builtinGrid");
+const builtinGroups = document.getElementById("builtinGroups");
 const customGrid = document.getElementById("customGrid");
 let pickerSlot = null;
 
@@ -761,8 +826,17 @@ function makePickEl(card) {
 }
 
 function renderPickerGrids() {
-  builtinGrid.innerHTML = "";
-  BUILTIN_CARDS.forEach((c) => builtinGrid.appendChild(makePickEl(c)));
+  builtinGroups.innerHTML = "";
+  CARD_GROUPS.forEach((group) => {
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = group.title;
+    builtinGroups.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "card-grid";
+    group.cards.forEach((c) => grid.appendChild(makePickEl(c)));
+    builtinGroups.appendChild(grid);
+  });
   customGrid.innerHTML = "";
   customCards.forEach((c) => customGrid.appendChild(makePickEl(c)));
   if (!customCards.length) {
